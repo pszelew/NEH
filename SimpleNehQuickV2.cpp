@@ -73,7 +73,6 @@ int utworz_graf_lewo(int x, int y, int i, int k, int pi[], zadanie zadania[], in
 		return 0;
 	if (lewo[x][y] != 0)
 		return lewo[x][y];
-	
 	lewo[x][y] = max(utworz_graf_lewo(x+1, y, i, k, pi, zadania, lewo), utworz_graf_lewo(x, y+1, i, k, pi, zadania, lewo)) + zadania[pi[x]].mach[y+1];
 	return lewo[x][y];
 }
@@ -117,8 +116,9 @@ int main()
 	int graf_prawo[501][21];
 	int graf_lewo[501][21];
 	int x = 0, y = 0;
+	auto total_dur=0;
+	int temp_dur = 0;
 
-	auto temp_dur=0;
 
 	for (int i = 0; i < 501; i++)
 	{
@@ -140,6 +140,17 @@ int main()
 
 	for (int g = 0; g < 121; g++)
 	{
+
+		for (int i = 0; i < 501; i++)
+		{
+			for (int j = 0; j < 21; j++)
+			{
+				graf_prawo[i][j] = 0;
+				graf_lewo[i][j] = 0;
+			}
+		}
+
+
 		ifstream data("neh.data.txt");
 		string nazwa;
 		string s = "";
@@ -233,21 +244,31 @@ int main()
 			//tutaj zerujemy tylko odpowiednie wartosci dla prawej
 			for (int i = best_pos; i < n+1; i++)
 			{
-				for (int j = 0; j < m+1; j++)
+				for (int j = 1; j < m+1; j++)
 				{
 					graf_prawo[i][j] = 0;
 				}
 			}
 
-			//tutaj zerujemy tylko odpowiednie wartosci dla lewej
-			for (int i = 0; i <= best_pos; i++)
+
+			//tutaj przenosimy odpowiednie wiersze dla lewej w dol
+			for (int i = n; i > best_pos; --i)
 			{
-				for (int j = 0; j < m+1; j++)
+				for (int j = 0; j < m + 1; j++)
+				{
+					graf_lewo[i][j] = graf_lewo[i - 1][j];
+				}
+			}
+
+	
+			//tutaj zerujemy tylko odpowiednie wartosci dla lewej
+			for (int i = 0; i <= best_pos; ++i)
+			{
+				for (int j = 0; j < m + 1; j++)
 				{
 					graf_lewo[i][j] = 0;
 				}
 			}
-
 
 			//utworzenie grafow, dla naszej kolejnosci
 			utworz_graf_prawo(i + 1, m, kolejnosc, tab, graf_prawo);
@@ -260,7 +281,9 @@ int main()
 		auto t4 = std::chrono::high_resolution_clock::now();
 
 		cout << nazwa  << endl;
-		cout << "Czas trwania: " << chrono::duration_cast<std::chrono::milliseconds>(t4 - t3).count()<<"ms" << endl;
+		temp_dur = chrono::duration_cast<std::chrono::milliseconds>(t4 - t3).count();
+		total_dur += temp_dur;
+		cout << "Czas trwania: " << temp_dur <<"ms" << endl;
 		cout << "neh:" << endl;
 		cout << best_cost<< endl;
 		for (int h = 0; h < n; ++h)
@@ -270,8 +293,10 @@ int main()
 		cout << endl << endl;
 		
 	}
+	cout << "Calkowity trwania: " << total_dur << "ms" << endl;
 
 
+	getchar();
 }
 // Uruchomienie programu: Ctrl + F5 lub menu Debugowanie > Uruchom bez debugowania
 // Debugowanie programu: F5 lub menu Debugowanie > Rozpocznij debugowanie
