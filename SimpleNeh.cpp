@@ -71,6 +71,8 @@ int main()
 	int temp_cost=INT_MAX;
 	int temp;
 	int c_hist[501][21];
+	int dur_total=0;
+	int dur_temp=0;
 
 	auto temp_dur=0;
 
@@ -83,7 +85,6 @@ int main()
 
 	for (int g = 0; g < 121; g++)
 	{
-		auto t3 = std::chrono::high_resolution_clock::now();
 		ifstream data("neh.data.txt");
 		string nazwa;
 		string s = "";
@@ -137,6 +138,8 @@ int main()
 
 		//w tej petli bedziemy znajdowac na jakie miejsce wlozyc nasze zadanie
 		//dla kazdego zadania
+
+		auto t3 = std::chrono::high_resolution_clock::now();
 		for (int i = 0; i < n; ++i)
 		{
 			
@@ -199,7 +202,11 @@ int main()
 		auto t4 = std::chrono::high_resolution_clock::now();
 
 		cout << nazwa  << endl;
-		cout << "Czas trwania: " << chrono::duration_cast<std::chrono::milliseconds>(t4 - t3).count()<<"ms" << endl;
+
+		dur_temp = chrono::duration_cast<std::chrono::milliseconds>(t4 - t3).count();
+		dur_total += dur_temp;
+
+		cout << "Czas trwania: " << dur_temp <<"ms" << endl;
 		cout << "neh:" << endl;
 		cout << best_cost<< endl;
 
@@ -209,6 +216,9 @@ int main()
 		}
 		cout << endl << endl;
 	}
+
+	cout << "Calkowity czas trwania: " << dur_total << "ms" << endl;
+	getchar();
 }
 // Uruchomienie programu: Ctrl + F5 lub menu Debugowanie > Uruchom bez debugowania
 // Debugowanie programu: F5 lub menu Debugowanie > Rozpocznij debugowanie
